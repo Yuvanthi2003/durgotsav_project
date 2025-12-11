@@ -1,0 +1,342 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .card-header {
+        background: linear-gradient(135deg, #667eea, #764ba2) !important;
+    }
+    
+    .btn-success {
+        background: linear-gradient(135deg, #27ae60, #2ecc71);
+        border: none;
+    }
+    
+    .btn-success:hover {
+        background: linear-gradient(135deg, #229954, #27ae60);
+        transform: translateY(-2px);
+    }
+    
+    .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    }
+    
+    .form-select:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    }
+    
+    .alert-info {
+        background: linear-gradient(135deg, #d6eaf8, #ebf5fb);
+        border-color: #3498db;
+        color: #2c3e50;
+    }
+</style>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header text-center text-white">
+                <h2>Complete Your Registration</h2>
+                <p class="mb-0">Final step to register for selected events</p>
+            </div>
+            <div class="card-body">
+                
+                <!-- Display form errors -->
+                {% if form.errors %}
+                <div class="alert alert-danger">
+                    <h5>Please correct the following errors:</h5>
+                    <ul class="mb-0">
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                                <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+                            {% endfor %}
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                <!-- Registration Form -->
+                <form method="post" id="registrationForm" novalidate>
+                    {% csrf_token %}
+
+                    <!-- Hidden fields to preserve event data -->
+                    <input type="hidden" name="selected_events" id="selected_events" value="{{ selected_events_data|default:'[]' }}">
+                    <input type="hidden" name="day_number" value="{{ request.POST.day_number|default:'' }}">
+                    <input type="hidden" name="day_title" value="{{ request.POST.day_title|default:'' }}">
+
+                    <!-- Debug Info -->
+                    <div class="alert alert-info d-none" id="debugInfo">
+                        <small>Selected Events: <span id="debugEvents">0</span></small>
+                    </div>
+
+                    <!-- Name Field -->
+                    <div class="mb-3">
+                        <label for="id_name" class="form-label">Full Name *</label>
+                        <input type="text"
+                               name="name"
+                               id="id_name"
+                               class="form-control {% if form.name.errors %}is-invalid{% endif %}"
+                               placeholder="Enter your full name"
+                               value="{{ form.name.value|default:'' }}"
+                               required
+                               pattern="[A-Za-z\s]+"
+                               title="Only letters and spaces are allowed">
+                        {% if form.name.errors %}
+                        <div class="invalid-feedback">
+                            {% for error in form.name.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <div class="form-text">Enter your full name (letters and spaces only)</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Email Field -->
+                    <div class="mb-3">
+                        <label for="id_email" class="form-label">Email Address *</label>
+                        <input type="email"
+                               name="email"
+                               id="id_email"
+                               class="form-control {% if form.email.errors %}is-invalid{% endif %}"
+                               placeholder="Enter your email address"
+                               value="{{ form.email.value|default:'' }}"
+                               required>
+                        {% if form.email.errors %}
+                        <div class="invalid-feedback">
+                            {% for error in form.email.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Phone Number Field with Country Code -->
+                    <div class="mb-3">
+                        <label class="form-label">Phone Number *</label>
+                        <div class="row g-2">
+                            <div class="col-md-3">
+                                <label class="form-label small">Country Code</label>
+                                <select name="country_code"
+                                        id="id_country_code"
+                                        class="form-select {% if form.country_code.errors %}is-invalid{% endif %}"
+                                        required>
+                                    <option value="">Select Code</option>
+                                    <option value="+91" {% if form.country_code.value == "+91" %}selected{% endif %}>🇮🇳 India +91</option>
+                                    <option value="+1" {% if form.country_code.value == "+1" %}selected{% endif %}>🇺🇸 USA +1</option>
+                                    <option value="+44" {% if form.country_code.value == "+44" %}selected{% endif %}>🇬🇧 UK +44</option>
+                                    <option value="+61" {% if form.country_code.value == "+61" %}selected{% endif %}>🇦🇺 Australia +61</option>
+                                    <option value="+65" {% if form.country_code.value == "+65" %}selected{% endif %}>🇸🇬 Singapore +65</option>
+                                    <option value="+971" {% if form.country_code.value == "+971" %}selected{% endif %}>🇦🇪 UAE +971</option>
+                                    <option value="+86" {% if form.country_code.value == "+86" %}selected{% endif %}>🇨🇳 China +86</option>
+                                    <option value="+81" {% if form.country_code.value == "+81" %}selected{% endif %}>🇯🇵 Japan +81</option>
+                                    <option value="+82" {% if form.country_code.value == "+82" %}selected{% endif %}>🇰🇷 South Korea +82</option>
+                                    <option value="+60" {% if form.country_code.value == "+60" %}selected{% endif %}>🇲🇾 Malaysia +60</option>
+                                    <option value="+66" {% if form.country_code.value == "+66" %}selected{% endif %}>🇹🇭 Thailand +66</option>
+                                    <option value="+92" {% if form.country_code.value == "+92" %}selected{% endif %}>🇵🇰 Pakistan +92</option>
+                                    <option value="+94" {% if form.country_code.value == "+94" %}selected{% endif %}>🇱🇰 Sri Lanka +94</option>
+                                    <option value="+880" {% if form.country_code.value == "+880" %}selected{% endif %}>🇧🇩 Bangladesh +880</option>
+                                    <option value="+977" {% if form.country_code.value == "+977" %}selected{% endif %}>🇳🇵 Nepal +977</option>
+                                </select>
+                                {% if form.country_code.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.country_code.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-9">
+                                <label class="form-label small">Phone Number</label>
+                                <input type="text"
+                                       name="phone_number"
+                                       id="id_phone_number"
+                                       class="form-control {% if form.phone_number.errors %}is-invalid{% endif %}"
+                                       placeholder="Enter your 10-digit phone number"
+                                       value="{{ form.phone_number.value|default:'' }}"
+                                       required
+                                       pattern="\d{10}"
+                                       title="Please enter exactly 10 digits"
+                                       maxlength="10">
+                                {% if form.phone_number.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.phone_number.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="form-text">
+                            Enter your 10-digit phone number (digits only)
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="fas fa-user-plus me-2"></i>Complete Registration
+                        </button>
+                    </div>
+
+                    <!-- Back Button -->
+                    <div class="text-center mt-3">
+                        {% if request.POST.day_number %}
+                        <a href="{% url 'day_detail' request.POST.day_number %}" class="btn btn-outline-secondary">
+                            ← Back to Event Selection
+                        </a>
+                        {% else %}
+                        <a href="{% url 'calendar' %}" class="btn btn-outline-secondary">
+                            ← Back to Calendar
+                        </a>
+                        {% endif %}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript Validation -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('registrationForm');
+    const nameInput = document.getElementById('id_name');
+    const phoneInput = document.getElementById('id_phone_number');
+    const countryCodeSelect = document.getElementById('id_country_code');
+    const selectedEventsInput = document.getElementById('selected_events');
+    const debugInfo = document.getElementById('debugInfo');
+    const debugEvents = document.getElementById('debugEvents');
+
+    // Show debug info if there are selected events
+    try {
+        const selectedEvents = JSON.parse(selectedEventsInput.value || '[]');
+        if (selectedEvents.length > 0) {
+            debugInfo.classList.remove('d-none');
+            debugEvents.textContent = selectedEvents.length;
+        }
+    } catch (e) {
+        console.log('No events selected');
+    }
+
+    // ✅ Real-time name validation (letters & spaces only)
+    nameInput.addEventListener('input', function() {
+        const regex = /^[A-Za-z\s]*$/;
+        const originalValue = this.value;
+        
+        // Remove non-alphabet characters
+        const cleanedValue = originalValue.replace(/[^A-Za-z\s]/g, '');
+        
+        if (cleanedValue !== originalValue) {
+            this.value = cleanedValue;
+            // Show gentle warning instead of alert
+            this.classList.add('is-invalid');
+            setTimeout(() => {
+                if (this.value === cleanedValue) {
+                    this.classList.remove('is-invalid');
+                }
+            }, 2000);
+        } else {
+            this.classList.remove('is-invalid');
+        }
+    });
+
+    // ✅ Phone number validation (digits only)
+    phoneInput.addEventListener('input', function() {
+        // Remove non-digit characters
+        this.value = this.value.replace(/\D/g, '');
+        
+        // Limit to 10 digits
+        if (this.value.length > 10) {
+            this.value = this.value.slice(0, 10);
+        }
+        
+        // Validate length
+        if (this.value.length === 10) {
+            this.classList.remove('is-invalid');
+        }
+    });
+
+    // ✅ Remove "required field" error when user types correctly
+    const inputs = form.querySelectorAll('input[required], select[required]');
+    inputs.forEach(input => {
+        input.addEventListener('input', () => {
+            if (input.value.trim() !== '') {
+                input.classList.remove('is-invalid');
+            }
+        });
+        
+        input.addEventListener('change', () => {
+            if (input.value.trim() !== '') {
+                input.classList.remove('is-invalid');
+            }
+        });
+    });
+
+    // ✅ Form submission validation
+    form.addEventListener('submit', function(e) {
+        let isValid = true;
+        
+        // Name validation
+        const nameRegex = /^[A-Za-z\s]+$/;
+        if (!nameRegex.test(nameInput.value.trim())) {
+            nameInput.classList.add('is-invalid');
+            isValid = false;
+        }
+        
+        // Phone validation
+        const phoneRegex = /^\d{10}$/;
+        if (!phoneRegex.test(phoneInput.value.trim())) {
+            phoneInput.classList.add('is-invalid');
+            isValid = false;
+        }
+        
+        // Country code validation
+        if (!countryCodeSelect.value) {
+            countryCodeSelect.classList.add('is-invalid');
+            isValid = false;
+        }
+        
+        if (!isValid) {
+            e.preventDefault();
+            // Show first error field
+            const firstInvalid = form.querySelector('.is-invalid');
+            if (firstInvalid) {
+                firstInvalid.focus();
+            }
+            
+            // Show custom popup instead of alert
+            const modal = new bootstrap.Modal(document.getElementById('errorModal'));
+            document.getElementById('modalMessage').textContent = 'Please correct the errors highlighted in red.';
+            modal.show();
+        }
+    });
+
+    // Auto-remove invalid class when user starts correcting
+    form.querySelectorAll('input, select').forEach(field => {
+        field.addEventListener('focus', function() {
+            this.classList.remove('is-invalid');
+        });
+    });
+});
+</script>
+
+<!-- Error Modal -->
+<div class="modal fade" id="errorModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">❌ Registration Error</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p id="modalMessage">Please fill in all required fields correctly.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

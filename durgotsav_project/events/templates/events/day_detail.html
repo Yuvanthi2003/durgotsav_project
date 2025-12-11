@@ -1,0 +1,351 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .day-header {
+        background: linear-gradient(135deg, #8b1a1a 0%, #764ba2 100%);
+        color: white;
+        padding: 40px 20px;
+        border-radius: 15px;
+        margin-bottom: 30px;
+        text-align: center;
+    }
+
+    .day-header h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .header-logo {
+        height: 60px;
+        width: 60px;
+        border-radius: 12px;
+        border: 2px solid rgba(255, 255, 255, 0.8);
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+        transition: all 0.3s ease;
+        animation: logoPulse 2s ease-in-out infinite;
+    }
+
+    .header-logo:hover {
+        transform: scale(1.1) rotate(5deg);
+        box-shadow: 0 0 30px rgba(255, 255, 255, 0.7);
+        border-color: rgba(255, 255, 255, 1);
+    }
+
+    @keyframes logoPulse {
+        0%, 100% {
+            transform: scale(1);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+        }
+        50% {
+            transform: scale(1.05);
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.6);
+        }
+    }
+
+    .day-header .date {
+        font-size: 1.3rem;
+        opacity: 0.9;
+    }
+
+    .events-section {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        margin-bottom: 100px;
+    }
+
+    .event-item {
+        display: flex;
+        align-items: flex-start;
+        padding: 20px;
+        border: 2px solid #e9ecef;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        transition: all 0.3s ease;
+        background: white;
+        cursor: pointer;
+    }
+
+    .event-item:hover {
+        border-color: #667eea;
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.1);
+    }
+
+    .event-item.selected {
+        border-color: #27ae60;
+        background: linear-gradient(135deg, #f8fff9, #e8f5e8);
+    }
+
+    .event-checkbox {
+        margin-right: 15px;
+        margin-top: 3px;
+    }
+
+    .event-checkbox input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+        accent-color: #27ae60;
+    }
+
+    .event-details {
+        flex: 1;
+    }
+
+    .event-time {
+        font-weight: 600;
+        color: #e74c3c;
+        font-size: 1rem;
+        margin-bottom: 5px;
+    }
+
+    .event-name {
+        color: #2c3e50;
+        font-size: 1.1rem;
+        margin: 0;
+        line-height: 1.4;
+    }
+
+    .selection-summary {
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+        border-left: 4px solid #e74c3c;
+    }
+
+    .selected-events-list {
+        max-height: 200px;
+        overflow-y: auto;
+        margin-top: 10px;
+    }
+
+    .selected-event {
+        background: white;
+        padding: 10px 12px;
+        border-radius: 5px;
+        margin-bottom: 8px;
+        border-left: 4px solid #27ae60;
+        font-size: 0.9rem;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .register-btn-container {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: white;
+        padding: 20px;
+        border-top: 2px solid #e9ecef;
+        box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
+        z-index: 1000;
+        display: none;
+    }
+
+    .btn-register {
+        background: linear-gradient(135deg, #8b1a1a, #2ecc71);
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        font-size: 1.2rem;
+        font-weight: 600;
+        border-radius: 25px;
+        transition: all 0.3s ease;
+        width: 100%;
+    }
+
+    .btn-register:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(39, 174, 96, 0.4);
+    }
+
+    .no-selection {
+        text-align: center;
+        color: #7f8c8d;
+        padding: 20px;
+        font-style: italic;
+    }
+
+    .back-btn {
+        background: linear-gradient(135deg, #8b1a1a, #7f8c8d);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 20px;
+        margin-bottom: 20px;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s ease;
+    }
+
+    .back-btn:hover {
+        background: linear-gradient(135deg, #7f8c8d, #95a5a6);
+        color: white;
+        text-decoration: none;
+        transform: translateY(-2px);
+    }
+
+    .selection-count {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #27ae60;
+    }
+
+    @media (max-width: 768px) {
+        .day-header h1 {
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .header-logo {
+            height: 50px;
+            width: 50px;
+        }
+        
+        .day-header h1 {
+            font-size: 2rem;
+        }
+    }
+</style>
+
+<div class="container-fluid py-4" style="padding-bottom: 120px;">
+    <a href="{% url 'calendar' %}" class="back-btn">← Back to Calendar</a>
+
+    <div class="day-header">
+        <h1>
+            {{ day_title }}
+            <img src="{% static 'images/namma-durga-logo.jpg' %}" alt="Namma Durga Logo" class="header-logo">
+        </h1>
+        <div class="date">{{ day_date|date:"l, F d, Y" }}</div>
+    </div>
+
+    <div class="selection-summary">
+        <h4>🎯 Your Selected Events</h4>
+        <div id="selectedCount" class="selection-count mb-2">
+            <strong>0 events selected</strong>
+        </div>
+        <div id="selectedEventsList" class="selected-events-list">
+            <div class="no-selection" id="noSelectionMessage">
+                No events selected yet. Click on events below to select them.
+            </div>
+        </div>
+    </div>
+
+    <div class="events-section">
+        <h4 class="mb-4">📅 Available Events (Click to select/deselect)</h4>
+        <div id="eventsList">
+            {% for time_slot, event_name in day_schedule %}
+            <div class="event-item" onclick="toggleEventSelection(this)">
+                <div class="event-checkbox">
+                    <input type="checkbox" 
+                           class="event-checkbox-input" 
+                           data-time="{{ time_slot }}" 
+                           data-name="{{ event_name }}">
+                </div>
+                <div class="event-details">
+                    <div class="event-time">{{ time_slot }}</div>
+                    <div class="event-name">{{ event_name }}</div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div class="register-btn-container" id="registerContainer">
+    <form id="registrationForm" method="post" action="{% url 'register' %}">
+        {% csrf_token %}
+        <div id="selectedEventsContainer"></div>
+        <input type="hidden" name="day_number" value="{{ day_number }}">
+        <input type="hidden" name="day_title" value="{{ day_title }}">
+        <button type="submit" class="btn-register" id="registerBtn">
+            Register for Selected Events (0)
+        </button>
+    </form>
+</div>
+
+<script>
+let selectedEvents = [];
+
+function toggleEventSelection(eventItem) {
+    const checkbox = eventItem.querySelector('.event-checkbox-input');
+    const time = checkbox.getAttribute('data-time');
+    const name = checkbox.getAttribute('data-name');
+    const eventId = `${time}-${name.replace(/\s+/g, '-')}`;
+
+    checkbox.checked = !checkbox.checked;
+
+    if (checkbox.checked) {
+        selectedEvents.push({ time, name, id: eventId });
+        eventItem.classList.add('selected');
+    } else {
+        selectedEvents = selectedEvents.filter(e => e.id !== eventId);
+        eventItem.classList.remove('selected');
+    }
+
+    updateSelectionSummary();
+}
+
+function updateSelectionSummary() {
+    const count = selectedEvents.length;
+    const registerContainer = document.getElementById('registerContainer');
+    const registerBtn = document.getElementById('registerBtn');
+    const selectedCount = document.getElementById('selectedCount');
+    const selectedEventsList = document.getElementById('selectedEventsList');
+    const noSelectionMessage = document.getElementById('noSelectionMessage');
+
+    registerContainer.style.display = count > 0 ? 'block' : 'none';
+    selectedCount.innerHTML = `<strong>${count} event${count !== 1 ? 's' : ''} selected</strong>`;
+    registerBtn.textContent = `Register for Selected Events (${count})`;
+
+    if (count > 0) {
+        noSelectionMessage.style.display = 'none';
+        selectedEventsList.innerHTML = selectedEvents.map(event =>
+            `<div class="selected-event">
+                <strong>${event.time}</strong><br>${event.name}
+            </div>`
+        ).join('');
+    } else {
+        noSelectionMessage.style.display = 'block';
+        selectedEventsList.innerHTML = '';
+    }
+}
+
+// ✅ Update JSON right before submit
+document.addEventListener('DOMContentLoaded', function() {
+    updateSelectionSummary();
+
+    document.getElementById('registrationForm').addEventListener('submit', function(e) {
+        console.log('=== FORM SUBMISSION DEBUG ===');
+        console.log('Selected events before submit:', selectedEvents);
+
+        if (selectedEvents.length === 0) {
+            e.preventDefault();
+            alert('Please select at least one event before registering.');
+            return false;
+        }
+
+        // Force update JSON input
+        const selectedEventsContainer = document.getElementById('selectedEventsContainer');
+        selectedEventsContainer.innerHTML = '';
+        const jsonInput = document.createElement('input');
+        jsonInput.type = 'hidden';
+        jsonInput.name = 'selected_events';
+        jsonInput.value = JSON.stringify(selectedEvents);
+        selectedEventsContainer.appendChild(jsonInput);
+
+        console.log('✅ Final JSON sent:', jsonInput.value);
+    });
+});
+</script>
+{% endblock %}

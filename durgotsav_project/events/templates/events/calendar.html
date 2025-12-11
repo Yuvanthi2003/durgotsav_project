@@ -1,0 +1,413 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, #8b1a1a 0%, #764ba2 100%);
+        color: white;
+        padding: 60px 20px;
+        border-radius: 15px;
+        margin-bottom: 40px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+        opacity: 0.3;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .hero-main {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 40px;
+        margin-bottom: 20px;
+    }
+
+    .hero-logo {
+        height: 140px; /* Increased from 100px */
+        width: 140px;  /* Increased from 100px */
+        border-radius: 20px;
+        border: 3px solid rgba(255, 255, 255, 0.8);
+        box-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+        transition: all 0.5s ease;
+        animation: logoFloat 3s ease-in-out infinite;
+        position: relative;
+        overflow: hidden;
+        flex-shrink: 0;
+    }
+
+    .hero-logo::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 600%;
+        height: 600%;
+        background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 70%);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .hero-logo:hover::before {
+        opacity: 1;
+    }
+
+    .hero-logo:hover {
+        transform: scale(1.1) rotate(5deg);
+        box-shadow: 0 0 50px rgba(255, 255, 255, 0.8);
+        border-color: rgba(255, 255, 255, 1);
+    }
+
+    .hero-text {
+        text-align: left;
+    }
+
+    @keyframes logoFloat {
+        0%, 100% {
+            transform: translateY(0px);
+        }
+        50% {
+            transform: translateY(-8px);
+        }
+    }
+
+    @keyframes logoGlow {
+        0%, 100% {
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+        }
+        50% {
+            box-shadow: 0 0 40px rgba(255, 255, 255, 0.8);
+        }
+    }
+
+    .hero-section h1 {
+        font-size: 3.5rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        line-height: 1.1;
+    }
+
+    .hero-section .lead {
+        font-size: 1.4rem;
+        opacity: 0.95;
+        margin-bottom: 0;
+        font-weight: 400;
+        line-height: 1.4;
+    }
+
+    .logo-sparkle {
+        position: absolute;
+        width: 8px; /* Increased sparkle size */
+        height: 8px; /* Increased sparkle size */
+        background: rgba(253, 215, 2, 0.8);
+        border-radius: 50%;
+        animation: sparkle 1s linear infinite;
+        opacity: 0;
+    }
+
+    @keyframes sparkle {
+        0% {
+            transform: scale(0) rotate(0deg);
+            opacity: 0;
+        }
+        50% {
+            transform: scale(1) rotate(180deg);
+            opacity: 1;
+        }
+        100% {
+            transform: scale(0) rotate(360deg);
+            opacity: 0;
+        }
+    }
+
+    .event-day {
+        border: none;
+        border-radius: 15px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        height: 100%;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .event-day:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+    }
+
+    /* NEW CARD COLORS - More Vibrant */
+    .event-calendar {
+        background: linear-gradient(135deg, #ff6b6b, #ffa726);
+        color: white;
+        padding: 20px;
+        font-size: 1.2rem;
+        font-weight: 600;
+    }
+
+    .card-body {
+        padding: 30px 20px;
+        background: linear-gradient(135deg, #ffffff, #f8f9fa);
+        border: 1px solid #e9ecef;
+    }
+
+    .card-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 15px;
+    }
+
+    .card-text {
+        color: #7f8c8d;
+        font-size: 1.1rem;
+        margin-bottom: 20px;
+    }
+
+    .btn-open-events {
+        background: linear-gradient(135deg, #8b1a1a, #764ba2);
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        font-weight: 600;
+        border-radius: 25px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-open-events:hover {
+        transform: scale(1.05);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+    /* NEW SCHEDULE SECTION COLORS */
+    .schedule-section {
+        background: linear-gradient(135deg, #ffffff, #f8f9fa);
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        border-left: 5px solid #667eea;
+        margin-top: 40px;
+        border: 1px solid #e9ecef;
+    }
+
+    .schedule-section h4 {
+        color: #667eea;
+        font-weight: 700;
+        margin-bottom: 25px;
+        font-size: 1.8rem;
+    }
+
+    /* Improved table styling */
+    .table-striped tbody tr:nth-of-type(odd) {
+        background-color: rgba(102, 126, 234, 0.05);
+    }
+
+    .table-striped tbody tr:hover {
+        background-color: rgba(102, 126, 234, 0.1);
+        transition: background-color 0.3s ease;
+    }
+
+    .table th {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        font-weight: 600;
+        border: none;
+        padding: 15px;
+    }
+
+    .table td {
+        padding: 15px;
+        border-color: #e9ecef;
+        vertical-align: middle;
+    }
+
+    @media (max-width: 768px) {
+        .hero-main {
+            flex-direction: column;
+            gap: 25px;
+            text-align: center;
+        }
+        
+        .hero-text {
+            text-align: center;
+        }
+        
+        .hero-section h1 {
+            font-size: 2.8rem; /* Slightly larger for mobile */
+        }
+        
+        .hero-section .lead {
+            font-size: 1.2rem; /* Slightly larger for mobile */
+        }
+        
+        .hero-logo {
+            height: 120px; /* Adjusted for mobile */
+            width: 120px;  /* Adjusted for mobile */
+        }
+    }
+
+    @media (max-width: 576px) {
+        .hero-section h1 {
+            font-size: 2.3rem;
+        }
+        
+        .hero-section .lead {
+            font-size: 1.1rem;
+        }
+        
+        .hero-logo {
+            height: 100px;
+            width: 100px;
+        }
+        
+        .hero-main {
+            gap: 20px;
+        }
+    }
+</style>
+
+<div class="row">
+    <div class="col-12">
+        <div class="hero-section text-center">
+            <div class="hero-content">
+                <!-- Logo beside text -->
+                <div class="hero-main">
+                    <div class="hero-logo-container position-relative">
+                        <img src="{% static 'images/namma-durga-logo.jpg' %}" alt="Namma Durga Logo" class="hero-logo">
+                    </div>
+                    <div class="hero-text">
+                        <h1>Durgotsav 25</h1>
+                        <p class="lead">Experience 5 Days of Divine Celebration, Culture & Spirituality</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Calendar Cards -->
+<div class="row">
+    {% for day_title, day_date, day_schedule in event_data %}
+    <div class="col-lg-4 col-md-6 mb-4">
+        <div class="card event-day text-center">
+            <div class="card-header event-calendar">
+                <h5 class="mb-0">Day {{ forloop.counter }}</h5>
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">{{ day_title }}</h5>
+                <p class="card-text">{{ day_date|date:"F d, Y" }}</p>
+                <a href="{% url 'day_detail' forloop.counter %}" class="btn-open-events">
+                    📅 Open Events
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Quick Overview Table -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="schedule-section">
+            <h4>📅 Quick Event Overview</h4>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Day</th>
+                            <th>Event</th>
+                            <th>Highlights</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for day_title, day_date, day_schedule in event_data %}
+                        <tr>
+                            <td><strong>{{ day_date|date:"M d, Y" }}</strong></td>
+                            <td>Day {{ forloop.counter }}</td>
+                            <td>{{ day_title }}</td>
+                            <td>
+                                {% if day_title == "Day 1 - Shashthi (The Awakening & Welcome)" %}
+                                🎵 Music Concert, 🎨 Workshops
+                                {% elif day_title == "Day 2 - Saptami (The Creative Spirit & Expression)" %}
+                                👗 Fashion Show, 🎭 Comedy Night
+                                {% elif day_title == "Day 3 - Ashtami (The Power Day & Spiritual Peak)" %}
+                                ⚔️ Martial Arts, 🎵 EDM Fusion
+                                {% elif day_title == "Day 4 - Navami (The Celebration Peak & Joy)" %}
+                                🎬 Film Festival, 💃 Dance
+                                {% elif day_title == "Day 5 - Dashami (The Grand Finale & Farewell)" %}
+                                🎆 Digital Fireworks, 🏆 Awards
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const heroLogo = document.querySelector('.hero-logo');
+        
+        // Add sparkle effects
+        function createSparkle() {
+            const sparkle = document.createElement('div');
+            sparkle.className = 'logo-sparkle';
+            
+            const size = Math.random() * 8 + 4; // Increased sparkle size range
+            sparkle.style.width = `${size}px`;
+            sparkle.style.height = `${size}px`;
+            
+            const container = heroLogo.parentElement;
+            const containerRect = container.getBoundingClientRect();
+            const logoRect = heroLogo.getBoundingClientRect();
+            
+            const x = Math.random() * (logoRect.width - size) + (logoRect.left - containerRect.left);
+            const y = Math.random() * (logoRect.height - size) + (logoRect.top - containerRect.top);
+            
+            sparkle.style.left = `${x}px`;
+            sparkle.style.top = `${y}px`;
+            sparkle.style.animationDelay = `${Math.random() * 5}s`;
+            
+            container.appendChild(sparkle);
+            
+            setTimeout(() => {
+                sparkle.remove();
+            }, 2000);
+        }
+        
+        // Create multiple sparkles
+        setInterval(createSparkle, 300); // More frequent sparkles
+        
+        // Enhanced hover effect
+        heroLogo.addEventListener('mouseenter', function() {
+            this.style.animation = 'logoGlow 1s ease-in-out infinite';
+        });
+        
+        heroLogo.addEventListener('mouseleave', function() {
+            this.style.animation = 'logoFloat 3s ease-in-out infinite';
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        /* === Corporate Email Styling (Admin Notification) === */
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            line-height: 1.7;
+            color: #2c3e50;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 640px;
+            margin: 40px auto;
+            background: #999738;
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            border: 1px solid #e0e0e0;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #3ed630, #1ca5b7);
+            color: #ffffff;
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .header h2 {
+            margin: 0;
+            font-size: 22px;
+            letter-spacing: 0.3px;
+        }
+
+        .content {
+            padding: 30px 40px;
+            background-color: #fafbfc;
+        }
+
+        .content h3 {
+            color: #b71c1c;
+            font-size: 18px;
+            margin-top: 0;
+        }
+
+        .content p {
+            margin-bottom: 16px;
+            font-size: 15px;
+        }
+
+        ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 6px;
+        }
+
+        .details-box {
+            background: #ffffff;
+            padding: 18px 20px;
+            border-radius: 6px;
+            border: 1px solid #e6e9ef;
+            margin: 18px 0;
+        }
+
+        strong {
+            color: #1a1a1a;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px 10px;
+            font-size: 12px;
+            color: #7f8c8d;
+            background-color: #f1f3f6;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .footer a {
+            color: #0073e6;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>New Event Registration - Durgotsav 25</h2>
+        </div>
+        
+        <div class="content">
+            <h3>Registration Details</h3>
+            <div class="details-box">
+                <ul>
+                    <li><strong>Name:</strong> {{ name }}</li>
+                    <li><strong>Email:</strong> {{ email }}</li>
+                    <li><strong>Phone:</strong> {{ country_code }} {{ phone }}</li>
+                    <li><strong>Registration Time:</strong> {{ registration.registration_date }}</li>
+                </ul>
+            </div>
+
+            <h3>Selected Events</h3>
+            <div class="details-box">
+                {% if selected_events %}
+                    <ul>
+                        {% for e in selected_events %}
+                            <li><strong>{{ e.time }}</strong> — {{ e.name }}</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No specific events selected.</p>
+                {% endif %}
+            </div>
+
+            <p>
+                This registration was received via the <strong>Durgotsav 25</strong> website.
+                Please review and confirm the details in your admin dashboard.
+            </p>
+        </div>
+
+        <div class="footer">
+            <p>
+                Automated Notification – Please do not reply.<br>
+                Contact <a href="mailto:support@durgotsav25.com">support@durgotsav25.com</a> for assistance.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

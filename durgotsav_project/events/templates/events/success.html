@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .card-header { background: linear-gradient(135deg, #27ae60, #2ecc71) !important; }
+    .alert-success { background: linear-gradient(135deg, #d5f4e6, #e8f8f5); border-color: #27ae60; color: #155724; }
+</style>
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header text-center text-white">
+                <h2>Registration Successful! ✅</h2>
+            </div>
+            <div class="card-body text-center">
+                <div class="alert alert-success">
+                    <h4>Thank you for registering for the event!</h4>
+                </div>
+                
+                <div class="registration-details mt-4">
+                    <h5>Your Registration Details:</h5>
+                    <p><strong>Name:</strong> {{ registration.name }}</p>
+                    <p><strong>Email:</strong> {{ registration.email }}</p>
+                    <p><strong>Phone:</strong> {{ registration.country_code }} {{ registration.phone_number }}</p>
+                </div>
+
+                <div class="mt-4 text-start">
+                    <h5>🎯 Selected Events:</h5>
+                    {% if selected_events %}
+                        <ul>
+                            {% for e in selected_events %}
+                                <li><strong>{{ e.time }}</strong> — {{ e.name }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p>No specific events selected.</p>
+                    {% endif %}
+                </div>
+                
+                <div class="mt-4 text-center">
+                    <p>A confirmation email has been sent to your email address.</p>
+                    <a href="{% url 'calendar' %}" class="btn btn-primary">Back to Calendar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,55 @@
+.event-calendar {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 10px;
+}
+
+.event-day {
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.event-day:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+.card-header {
+    border-bottom: 2px solid #dee2e6;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%);
+    border: none;
+}
+
+
+/* Phone number validation styles */
+.phone-validation {
+    position: relative;
+}
+
+.phone-validation .valid-feedback,
+.phone-validation .invalid-feedback {
+    display: block;
+}
+
+/* Modal customization */
+.modal-header.bg-warning {
+    background-color: #ffc107 !important;
+    color: #000;
+}
+
+/* Input focus effects */
+.form-control:focus {
+    border-color: #86b7fe;
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}

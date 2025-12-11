@@ -1,0 +1,214 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Durgotsav 25{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Navbar styling - NEW COLORS */
+        .navbar {
+            background: linear-gradient(90deg, #ff6b6b, #ffa726);
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .navbar img {
+            height: 60px;
+            border-radius: 12px;
+            margin-right: 12px;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            box-shadow: 0 0 0 rgba(255, 255, 255, 0.4);
+            position: relative;
+            z-index: 1;
+        }
+
+        .navbar img:hover {
+            transform: scale(1.05);
+            border-color: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+        }
+
+        /* Logo glow effect */
+        .logo-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .logo-container::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 90px;
+            height: 90px;
+            background: radial-gradient(circle, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 70%);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 0;
+        }
+
+        .logo-container:hover::before {
+            opacity: 1;
+        }
+
+        /* Logo pulse animation */
+        @keyframes logo-pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.6);
+            }
+            70% {
+                box-shadow: 0 0 0 12px rgba(255, 255, 255, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+            }
+        }
+
+        .logo-pulse {
+            animation: logo-pulse 2s infinite;
+        }
+
+        /* Center the brand text */
+        .navbar-center {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .navbar-center .brand-text {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        /* Page content */
+        .content-container {
+            padding: 40px 0;
+        }
+
+        footer {
+            background: linear-gradient(90deg, #2c3e50, #34495e);
+            color: #ecf0f1;
+            padding: 20px 0;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: #ffa726;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        footer a:hover {
+            color: #ff6b6b;
+            text-decoration: underline;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .navbar-center {
+                position: static;
+                transform: none;
+                text-align: center;
+                margin: 10px 0;
+            }
+            
+            .navbar-brand {
+                justify-content: center;
+            }
+            
+            .navbar-center .brand-text {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+
+    {% block extra_head %}{% endblock %}
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container position-relative">
+            <!-- Logo on the left -->
+            <a class="navbar-brand d-flex align-items-center" href="/">
+                <div class="logo-container">
+                    <img src="{% static 'images/namma-durga-logo.jpg' %}" alt="Namma Durga Logo" class="logo-pulse">
+                </div>
+            </a>
+
+            <!-- Centered Brand Text -->
+            <div class="navbar-center">
+                <span class="brand-text">Durgotsav 25</span>
+            </div>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container content-container">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>© 2025 Namma Durga | Designed for <strong>Durgotsav 25</strong></p>
+            <p><a href="mailto:rambhupalreddy2000@gmail.com">Contact Us</a></p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Enhanced logo interaction
+        document.addEventListener('DOMContentLoaded', function() {
+            const logo = document.querySelector('.navbar img');
+            
+            // Add subtle animation on page load
+            setTimeout(() => {
+                logo.style.transform = 'scale(1.02)';
+                setTimeout(() => {
+                    logo.style.transform = 'scale(1)';
+                }, 200);
+            }, 500);
+            
+            // Add click effect
+            logo.addEventListener('click', function() {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1.05)';
+                }, 150);
+            });
+        });
+    </script>
+    
+    {% block scripts %}{% endblock %}
+</body>
+</html>
